@@ -18,6 +18,9 @@ Vector3 bottomBackRight;
 Vector3[] corners;
 Bounds bounds;
 
+Vector3 randomPoint;
+public GameObject target;
+
 void Start() {
 	// MeshFilter mf = landscape.GetComponent(MeshFilter);
 	bounds = landscape.GetComponent<Collider>().bounds;
@@ -27,7 +30,15 @@ void Start() {
 void Update () {
 	UpdateCorners();
     DrawBoundingBox();
-    DrawRaycasts();
+	
+	if (Input.GetMouseButtonDown(0)){
+		randomPoint = GetRandomPointBetweenExtents();
+		if (Physics.Raycast(randomPoint + Vector3.up*bounds.max.z, -Vector3.up, out RaycastHit raycastHit, Mathf.Infinity)){
+			target.transform.position = raycastHit.point;
+	}
+	}
+
+	DrawRaycasts();
 }
 
 
@@ -43,8 +54,14 @@ void UpdateCorners() {
 }
 
 void DrawRaycasts(){
-    Vector3 randomPoint = GetRandomPointBetweenExtents();
-    Debug.DrawLine(randomPoint, randomPoint - Vector3.up*5, Color.red);
+
+
+	// if (Physics.Raycast(randomPoint + Vector3.up, RandomUnitVector, out RaycastHit raycastHit, Mathf.Infinity, GlobalGameVars.wallLayerMask)){
+		// ResetTarget(raycastHit.point, raycastHit.normal);
+		// return;
+	// }
+
+    Debug.DrawLine(randomPoint + Vector3.up*bounds.max.z, randomPoint - Vector3.up*bounds.max.z, Color.red);
 }
 
 Vector3 GetRandomPointBetweenExtents(){
